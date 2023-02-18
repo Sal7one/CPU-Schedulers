@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Exo" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Algorithms Visualizer</title>
+</head>
+<body>
+    <div class="main">
+            <h1 class="pageTitle">Algorithms Visualizer</h1>  
+
+        <div class="container">
+            <div class="inputs">
+                <div class="inputcontainer">
+                    
+                    <div class="form-control" >
+                  
+                        <div class="entry">
+                            <label for="task">Task name</label>
+                            <input type="text" id="task" name="task"/>
+                        </div>
+                        <div class="entry">
+                            <label for="arrival">Arrival Time</label>
+                            <input type="number" id="arrival" name="arrival" min="0"  />
+                        </div>
+                        <div class="entry">
+                            <label for="burst">Burst Time</label>
+                            <input type="number" id="burst" name="burst" min="0"   />
+                        </div>
+                        <div class="entry">
+                            <label for="priority">Priority number</label>
+                            <input type="number" id="priority" name="priority" min="1"   />
+                        </div>
+                    </div>
+                    <button class="btn" id="addbtn">Add</button>
+                    <div class="prepareddiv">
+                        <button id="list1" class="prepared">Prepared 1</button>
+                        <button id="list2" class="prepared">Prepared 2</button>
+                    </div>
+            </div>
+        </div>
+
+        <div class="mid">
+          <div id="table" class="listOfEntries hide">
+            <h4>Job List</h4>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Arrival Time</th>
+                        <th>Burst Time</th>
+                        <th>Priority</th>
+                    </tr>
+                </thead>
+                <tbody id="jobstable">
+                </tbody>
+            </table>
+          </div>
+        </div>
+              
+    </div>
+
+
+    <div id="options" class="hide">
+
+    <h3>Choose an algorithm</h3>
+                        <div >
+                        <div class="choices">
+                            <div class="choice">
+                                <input type="radio" name="algochoice" id="fifo" value="fifo" checked />First Come First served
+                            </div>
+                            <div class="choice">
+                                <input type="radio" name="algochoice" id="sjf" value="sjf"  />Shortest job first
+                            </div>
+                            <div class="choice">
+                                <input type="radio" name="algochoice" id="ps" value="ps"  />Priority Scheduling
+                            </div>
+                            <div class="choice">
+                                <input type="radio" name="algochoice" id="rr" value="rr"  />Round Robin
+                            </div>
+                        </div>
+                        <div id="quantuminputs" class="hide" >
+                            <label for="quantumvalue"> Quantum</label>
+                            <input id="quantumvalue" type="number" name="quantumvalue" value="1" min="1" >
+                        </div>                    
+            <div  class="playdiv"> 
+                <button id="playbutton">▶</button>
+                <button id="resetbutton" style="background-color: black;">❌</button>
+            </div>
+            </div>
+</div>
+
+
+
+<div id="output">
+    <div id="timeoutput" class="timeoutput">
+
+    </div>
+  
+    <div class="lists">
+
+        <div id="oglist"  class="list">
+        </div>
+    
+        <div id="newlist" class="list">
+        </div>
+
+    </div>
+
+</div>
+
+
+</div>
+    <script src="process.js"></script>
+    <script src="play.js"></script>
+
+    <script> 
+    //Github@Sal7one
+    </script>
+
+<!-- Github@Sal7one -->
+</body>
+</html>
