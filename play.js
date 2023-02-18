@@ -192,6 +192,25 @@ function resetUI() {
     rebuildUI();
 }
 
+function removeElm(event){
+    let idToRemove = parseInt(event.parentNode.id);
+    removeElmFromArray(priorityList, idToRemove);
+
+    for (let index = 0; index < jobList.length; index++) {
+        const job = jobList[index];
+        if(job.jpriority == idToRemove){
+            jobList.splice(index, 1); 
+    }
+}
+
+    rebuildUI();
+}
+function removeElmFromArray(arr, elmIndex){
+    const index = arr.indexOf(elmIndex);
+    if (index != -1) {
+        arr.splice(index, 1); 
+    }
+}
 function buildJobRow(
     id,
     jobName,
@@ -200,12 +219,15 @@ function buildJobRow(
     JobPriority,
 ) {
 
-    return `<tr>
+    return `<tr id="${JobPriority}">
     <td>${id}</td>
     <td>${jobName}</td>
     <td>${jobarrival}</td>
     <td>${jobBurst}</td>
     <td>${JobPriority}</td>
+    <td id="${JobPriority}">
+    <button id="deletebutton" onclick="removeElm(this)" style="background-color: black;">❌</button>
+    </td>
 </tr>`;
 
 }
