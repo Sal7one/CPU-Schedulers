@@ -16,11 +16,10 @@ const quantuminputs = document.querySelector("#quantuminputs");
 const resetbutton = document.querySelector("#resetbutton");
 const list1button = document.querySelector("#list1");
 const list2button = document.querySelector("#list2");
-
 let jobList = [];
 let priorityList = [];
 
-
+// Listen for Enter Key 
 document.body.addEventListener('keypress', function(e) {
     // If any of them has data check for enter key
     if (taskInput.value != "" ||
@@ -31,20 +30,201 @@ document.body.addEventListener('keypress', function(e) {
             addJob();
         }
 });
-addBtn.addEventListener("click", addJob);
 
+// Listeners 
+addBtn.addEventListener("click", addJob);
 fcfsButton.addEventListener("click", rebuildUI);
 sjfButton.addEventListener("click", rebuildUI);
 psButton.addEventListener("click", rebuildUI);
 rrButton.addEventListener("click", rebuildUI);
-resetbutton.addEventListener("click", resetUi);
-
-
+resetbutton.addEventListener("click", resetUI);
 list1button.addEventListener("click", (event) => fillList(event));
 list2button.addEventListener("click", (event) => fillList(event));
+playButton.addEventListener("click", playRealTime);
 
+function addJob() {
+
+    if (
+        taskInput.value.length < 1 || 
+        priorityInput.value.length < 1 ||
+        burstInput.value.length < 1 || 
+        arrivalInput.value.length < 1
+    ) {
+        showAlert("Missing information");
+        return;
+    }
+
+    if(parseInt(arrivalInput.value) == 0){
+        showAlert("Arrival Time Can't be zero");
+        return;
+    }
+    if(parseInt(burstInput.value) == 0){
+        showAlert("Burst Time Can't be zero");
+        return;
+    }
+    
+    if(parseInt(priorityInput.value) == 0){
+        showAlert("Priority Can't be zero");
+        return;
+    }
+
+    if (priorityList.indexOf(parseInt(priorityInput.value)) == -1) {
+        priorityList.push(parseInt(priorityInput.value));
+
+        const job = {
+            jid: jobList.length + 1,
+            jname: taskInput.value,
+            jarrival: parseInt(arrivalInput.value),
+            jburst: parseInt(burstInput.value),
+            jpriority: parseInt(priorityInput.value)
+        }
+        jobList.push(job);
+    } else {
+        showAlert("Duplicate Priority!")
+        return;
+    }
+
+    // Clean up
+    taskInput.value = "";
+    arrivalInput.value = "";
+    burstInput.value = "";
+    priorityInput.value = "";
+
+    rebuildUI();
+}
+
+function rebuildUI() {
+    if (jobList.length > 0) {
+        const rowsOfJob = [];
+        jobList.forEach(process => {
+            rowsOfJob.push(
+                buildJobRow(
+                    process.jid,
+                    process.jname,
+                    process.jarrival,
+                    process.jburst,
+                    process.jpriority,
+                ));
+        });
+
+        tableInput.innerHTML = rowsOfJob.join(" ");
+        table.classList.remove("hide");
+        options.classList.remove("hide");
+        output.classList.remove("hide");
+
+        if (rrButton.checked) {
+            quantuminputs.classList.remove("hide");
+        } else {
+            quantuminputs.classList.add("hide");
+        }
+
+    } else {
+        quantuminputs.classList.add("hide");
+        options.classList.add("hide");
+        output.classList.add("hide");
+        table.classList.add("hide");
+    }
+}
+
+const algrothims = new Algrothims();
+
+function playRealTime() {
+    let outputHTML = document.querySelector("#newlist");
+    let timeOutout = document.querySelector("#timeoutput");
+    let result = null;
+
+    let processList = [];
+    jobList.forEach(job => {
+        processList.push(
+            new Process(
+                job.jid,
+                job.jname,
+                job.jarrival,
+                job.jburst,
+                job.jpriority,
+            )
+        )
+    })
+
+    if (rrButton.checked) {
+        let quantumElm = document.querySelector("#quantumvalue");
+        result = algrothims.roundRobinScheduling(processList, parseInt(quantumElm.value));
+        let eventsTimeLine = "";
+
+        result.events.forEach(roundRobinEvent => {
+            eventsTimeLine += buildEventText(roundRobinEvent);
+        })
+
+        outputHTML.innerHTML = ""; // if there was a list perviously remove it
+        timeOutout.innerHTML = `<h5 class="runinfo" >Event Timeline</h5> ${eventsTimeLine}`
+        return;
+    } else if (sjfButton.checked) {
+        result = algrothims.SJF(processList);
+    } else if (psButton.checked) {
+        result = algrothims.priorityScheduling(processList);
+    } else if (fcfsButton.checked) {
+        result = algrothims.FCFS(processList);
+    }
+
+    timeOutout.innerHTML = buildTimeElements(result.avgWaitingTime, result.avgTurnaroundTime);
+    outputHTML.innerHTML = buildProcessRow(result.processes); 
+}
+
+function buildEventText(roundRobinEvent){
+    if (roundRobinEvent.includes("partially")) {
+        return `<h5 class="runinfo" ><span class="partially">${roundRobinEvent}</span></h5>`;
+    }
+    return `<h5 class="runinfo" ><span>${roundRobinEvent}</span></h5>`;
+}
+function buildTimeElements(avgWaitingTime, avgTurnaroundTime){
+   return  `<h5 class="runinfo" >Average wait time: <span id="avgwait">${avgWaitingTime.toFixed(3)}</span></h5>
+    <h5 class="runinfo" >Average turnaround time: <span id="avgturn">${avgTurnaroundTime.toFixed(3)}</span></h5>`;
+
+}
+
+function resetUI() {
+    let outputHTML = document.querySelector("#newlist");
+    let timeOutout = document.querySelector("#timeoutput");
+    outputHTML.innerHTML = "";
+    timeOutout.innerHTML = "";
+    priorityList = [];
+    jobList = [];
+    rebuildUI();
+}
+
+function buildJobRow(
+    id,
+    jobName,
+    jobarrival,
+    jobBurst,
+    JobPriority,
+) {
+
+    return `<tr>
+    <td>${id}</td>
+    <td>${jobName}</td>
+    <td>${jobarrival}</td>
+    <td>${jobBurst}</td>
+    <td>${JobPriority}</td>
+</tr>`;
+
+}
+
+// Build List of Jobs to show
+function buildProcessRow(arrayOfProcess) {
+    let proceses = ""
+    arrayOfProcess.forEach(process => {
+        proceses += `<div class="process" id="${process.id}">${process.pname}</div>`
+    });
+
+    return `
+   ${proceses}
+ `
+}
+
+// Static Data
 function fillList(event) {
-    resetUi();
+    resetUI();
 
     if (event.target.id == "list1") {
         const job1 = {
@@ -115,46 +295,6 @@ function fillList(event) {
     rebuildUI();
 }
 
-function resetUi() {
-    priorityList = [];
-    jobList = [];
-    rebuildUI();
-}
-
-function addJob() {
-
-    if (
-        taskInput.value.length < 1 || priorityInput.value.length < 1 || burstInput.value.length < 1 || arrivalInput.value.length < 1
-    ) {
-        showAlert("Info missing");
-        return;
-    }
-
-    if (priorityList.indexOf(parseInt(priorityInput.value)) == -1) {
-        priorityList.push(parseInt(priorityInput.value));
-
-        const job = {
-            jid: jobList.length + 1,
-            jname: taskInput.value,
-            jarrival: parseInt(arrivalInput.value),
-            jburst: parseInt(burstInput.value),
-            jpriority: parseInt(priorityInput.value)
-        }
-        jobList.push(job);
-    } else {
-        showAlert("Duplicate Priority!")
-        return;
-    }
-
-    // Clean up
-    taskInput.value = "";
-    arrivalInput.value = "";
-    burstInput.value = "";
-    priorityInput.value = "";
-
-    rebuildUI();
-}
-
 function showAlert(msg) {
     Swal.fire({
         position: 'top-end',
@@ -165,121 +305,6 @@ function showAlert(msg) {
     })
 }
 
-function rebuildUI() {
-    if (jobList.length > 0) {
-        const rowsOfJob = [];
-        jobList.forEach(process => {
-            rowsOfJob.push(
-                buildJobRow(
-                    process.jid,
-                    process.jname,
-                    process.jarrival,
-                    process.jburst,
-                    process.jpriority,
-                ));
-        });
-
-        tableInput.innerHTML = rowsOfJob.join(" ");
-        table.classList.remove("hide");
-        options.classList.remove("hide");
-        output.classList.remove("hide");
-
-        if (rrButton.checked) {
-            quantuminputs.classList.remove("hide");
-        } else {
-
-            quantuminputs.classList.add("hide");
-        }
-
-    } else {
-        quantuminputs.classList.add("hide");
-        options.classList.add("hide");
-        output.classList.add("hide");
-        table.classList.add("hide");
-    }
-}
-
-const algrothims = new Algrothims();
-
-function playRealTime() {
-
-    let processList = [];
-
-    jobList.forEach(job => {
-        processList.push(
-            new Process(
-                job.jid,
-                job.jname,
-                job.jarrival,
-                job.jburst,
-                job.jpriority,
-            )
-        )
-    })
-
-    let outputHTML = document.querySelector("#newlist");
-    let timeOutout = document.querySelector("#timeoutput");
-    let result = null;
-
-    if (rrButton.checked) {
-        let quantum = parseInt(document.querySelector("#quantumvalue").value);
-        result = algrothims.roundRobinScheduling(processList, quantum);
-        let eventsTimeLine = ""
-        result.events.forEach(event => {
-            if (event.includes("partially")) {
-                eventsTimeLine += `<h5 class="runinfo" ><span class="partially">${event}</span></h5>`
-            } else {
-                eventsTimeLine += `<h5 class="runinfo" ><span>${event}</span></h5>`
-            }
-        })
-        outputHTML.innerHTML = ""; // if there was a list perviously remove it
-        timeOutout.innerHTML = `<h5 class="runinfo" >Event Timeline</h5> ${eventsTimeLine}`
-        return;
-    } else if (sjfButton.checked) {
-
-        result = algrothims.SJF(processList);
-    } else if (psButton.checked) {
-        result = algrothims.priorityScheduling(processList);
-    } else if (fcfsButton.checked) {
-        result = algrothims.FCFS(processList);
-    }
-
-    outputHTML.innerHTML = buildProcessRow(result.processes);
-    timeOutout.innerHTML = `<h5 class="runinfo" >Average wait time: <span id="avgwait">${result.avgWaitingTime.toFixed(3)}</span></h5>
-    <h5 class="runinfo" >Average turnaround time: <span id="avgturn">${result.avgTurnaroundTime.toFixed(3)}</span></h5>`
-}
-
-playButton.addEventListener("click", playRealTime);
 rebuildUI();
-
-function buildJobRow(
-    id,
-    jobName,
-    jobarrival,
-    jobBurst,
-    JobPriority,
-) {
-
-    return `<tr>
-    <td>${id}</td>
-    <td>${jobName}</td>
-    <td>${jobarrival}</td>
-    <td>${jobBurst}</td>
-    <td>${JobPriority}</td>
-</tr>`;
-
-}
-
-function buildProcessRow(arrayOfProcess) {
-    let proceses = ""
-    arrayOfProcess.forEach(process => {
-        proceses += `<div class="process" id="${process}">${process.pname}</div>`
-    });
-
-    return `
-   ${proceses}
- `
-}
-
 
 // Github@Sal7one

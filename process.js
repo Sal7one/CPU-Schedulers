@@ -1,6 +1,4 @@
 // Define a class to represent a process
-
-
 class Process {
   constructor(id, pname, arrivalTime, burstTime, priority) {
     this.id = id;
