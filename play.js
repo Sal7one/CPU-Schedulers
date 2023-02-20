@@ -148,7 +148,14 @@ function playRealTime() {
 
     if (rrButton.checked) {
         let quantumElm = document.querySelector("#quantumvalue");
-        result = algrothims.roundRobinScheduling(processList, parseInt(quantumElm.value));
+        let quantumValue = parseInt(quantumElm.value);
+
+        if(quantumValue <= 0){
+            showAlert("Quantum can't be zero");
+            return;
+        }
+
+        result = algrothims.roundRobinScheduling(processList, quantumValue);
         let eventsTimeLine = "";
 
         result.events.forEach(roundRobinEvent => {
