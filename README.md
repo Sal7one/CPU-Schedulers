@@ -1,5 +1,6 @@
 # CPU-Schedulers in Javascript
 
+<a href="https://sal7one.github.io/CPU-Schedulers/"> Try it here </a>
 
 <img src="screenshot.png" width="850">
 
