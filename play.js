@@ -377,5 +377,3 @@ function showAlert(msg) {
 }
 
 rebuildUI();
-
-// Github@Sal7one
