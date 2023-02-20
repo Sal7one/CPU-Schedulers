@@ -50,21 +50,6 @@ roundRobinScheduling(processes, quantum) {
 
 SJF(processes) {
     // Sort processes by burst time
-
-    // [
-    //   prcoess1: {
-    //     id:
-    //     name:
-    //     burstTime
-    //   },
-    //   prcoess2: {
-    //     id:
-    //     name:
-    //     burstTime
-    //   }
-    // ]
-    // 7 - 2 (b, a, c)  (2,7,9) 7 - 9 -2
-    //    if  (a > b) -> (b,a) else (a,b)
     processes.sort((a, b) => a.burstTime - b.burstTime);
     return this.calcualteAverages(processes);
   }
@@ -85,11 +70,11 @@ priorityScheduling(processes) {
       let process = processes[i];
   
       // Calculate waiting time for the current process
-      process.waitingTime = currentTime - process.arrivalTime;
-      if (process.waitingTime < 0) {
+      if (i !=  (processes.length - 1) )
+        process.waitingTime = currentTime + process.burstTime;
+      else
         process.waitingTime = 0;
-      }
-  
+        
       // Update current time and total waiting/turnaround times
       currentTime += process.burstTime;
       totalWaitingTime += process.waitingTime;

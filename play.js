@@ -16,6 +16,7 @@ const quantuminputs = document.querySelector("#quantuminputs");
 const resetbutton = document.querySelector("#resetbutton");
 const list1button = document.querySelector("#list1");
 const list2button = document.querySelector("#list2");
+const list3button = document.querySelector("#list3");
 let jobList = [];
 let priorityList = [];
 
@@ -40,6 +41,7 @@ rrButton.addEventListener("click", rebuildUI);
 resetbutton.addEventListener("click", resetUI);
 list1button.addEventListener("click", (event) => fillList(event));
 list2button.addEventListener("click", (event) => fillList(event));
+list3button.addEventListener("click", (event) => fillList(event));
 playButton.addEventListener("click", playRealTime);
 
 function addJob() {
@@ -287,7 +289,7 @@ function fillList(event) {
         jobList.push(job2);
         jobList.push(job3);
         
-    } else {
+    }  else if(event.target.id == "list2") {
         const job1 = {
             jid: 1,
             jname: "Job 1",
@@ -319,6 +321,46 @@ function fillList(event) {
         jobList.push(job1);
         jobList.push(job2);
         jobList.push(job3);
+    }else{
+        const job1 = {
+            jid: 1,
+            jname: "P1",
+            jarrival: 0,
+            jburst: 6,
+            jpriority: 1
+        }
+        priorityList.push(1);
+        const job2 = {
+            jid: 2,
+            jname: "P2",
+            jarrival: 0,
+            jburst: 8,
+            jpriority: 2
+        }
+        priorityList.push(2);
+        
+        
+        const job3 = {
+            jid: 3,
+            jname: "P3",
+            jarrival: 0,
+            jburst: 7,
+            jpriority: 3
+        }
+        priorityList.push(3);
+
+        const job4 = {
+            jid: 4,
+            jname: "P4",
+            jarrival: 0,
+            jburst: 3,
+            jpriority: 4
+        }
+        priorityList.push(4);
+        jobList.push(job1);
+        jobList.push(job2);
+        jobList.push(job3);
+        jobList.push(job4);
     }
 
     rebuildUI();
