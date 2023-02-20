@@ -252,8 +252,8 @@ function fillList(event) {
         const job1 = {
             jid: 1,
             jname: "Job 1",
-            jarrival: 1,
-            jburst: 1,
+            jarrival: 3,
+            jburst: 3,
             jpriority: 1
         }
         priorityList.push(1);

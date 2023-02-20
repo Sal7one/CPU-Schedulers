@@ -15,38 +15,8 @@ class Process {
 class Algrothims{
 
 FCFS(processes) {
-    let currentTime = 0;
-    let totalWaitingTime = 0;
-    let totalTurnaroundTime = 0;
-  
-    for (let i = 0; i < processes.length; i++) {
-      let process = processes[i];
-  
-      // Calculate waiting time for the current process
-      process.waitingTime = currentTime - process.arrivalTime;
-      if (process.waitingTime < 0) {
-        process.waitingTime = 0;
-      }
-  
-      // Update current time and total waiting/turnaround times
-      currentTime += process.burstTime;
-      totalWaitingTime += process.waitingTime;
-      totalTurnaroundTime += process.waitingTime + process.burstTime;
-  
-      // Calculate turnaround time for the current process
-      process.turnaroundTime = process.waitingTime + process.burstTime;
-    }
-  
-    // Calculate average waiting and turnaround times
-    let avgWaitingTime = totalWaitingTime / processes.length;
-    let avgTurnaroundTime = totalTurnaroundTime / processes.length;
-  
-    // Return the results as an object
-    return {
-      processes: processes,
-      avgWaitingTime: avgWaitingTime,
-      avgTurnaroundTime: avgTurnaroundTime
-    };
+    // Nothing to sort here
+    return this.calcualteAverages(processes);
   }
 
 roundRobinScheduling(processes, quantum) {
@@ -77,51 +47,39 @@ roundRobinScheduling(processes, quantum) {
     };
   }
   
+
 SJF(processes) {
-    let currentTime = 0;
-    let totalWaitingTime = 0;
-    let totalTurnaroundTime = 0;
-  
     // Sort processes by burst time
+
+    // [
+    //   prcoess1: {
+    //     id:
+    //     name:
+    //     burstTime
+    //   },
+    //   prcoess2: {
+    //     id:
+    //     name:
+    //     burstTime
+    //   }
+    // ]
+    // 7 - 2 (b, a, c)  (2,7,9) 7 - 9 -2
+    //    if  (a > b) -> (b,a) else (a,b)
     processes.sort((a, b) => a.burstTime - b.burstTime);
-  
-    for (let i = 0; i < processes.length; i++) {
-      let process = processes[i];
-  
-      // Calculate waiting time for the current process
-      process.waitingTime = currentTime - process.arrivalTime;
-      if (process.waitingTime < 0) {
-        process.waitingTime = 0;
-      }
-  
-      // Update current time and total waiting/turnaround times
-      currentTime += process.burstTime;
-      totalWaitingTime += process.waitingTime;
-      totalTurnaroundTime += process.waitingTime + process.burstTime;
-  
-      // Calculate turnaround time for the current process
-      process.turnaroundTime = process.waitingTime + process.burstTime;
-    }
-  
-    // Calculate average waiting and turnaround times
-    let avgWaitingTime = totalWaitingTime / processes.length;
-    let avgTurnaroundTime = totalTurnaroundTime / processes.length;
-  
-    // Return the results as an object
-    return {
-      processes: processes,
-      avgWaitingTime: avgWaitingTime,
-      avgTurnaroundTime: avgTurnaroundTime
-    };
+    return this.calcualteAverages(processes);
   }
   
 priorityScheduling(processes) {
+    // Sort processes by priority
+    //    if  (a > b) -> (b,a) else (a,b)
+    processes.sort((a, b) => a.priority - b.priority);
+   return this.calcualteAverages(processes);
+  }
+
+  calcualteAverages(processes) {
     let currentTime = 0;
     let totalWaitingTime = 0;
     let totalTurnaroundTime = 0;
-  
-    // Sort processes by priority
-    processes.sort((a, b) => b.priority - a.priority);
   
     for (let i = 0; i < processes.length; i++) {
       let process = processes[i];
@@ -136,9 +94,6 @@ priorityScheduling(processes) {
       currentTime += process.burstTime;
       totalWaitingTime += process.waitingTime;
       totalTurnaroundTime += process.waitingTime + process.burstTime;
-  
-      // Calculate turnaround time for the current process
-      process.turnaroundTime = process.waitingTime + process.burstTime;
     }
   
     // Calculate average waiting and turnaround times
