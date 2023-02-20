@@ -2,7 +2,7 @@
 
 <a href="https://sal7one.github.io/CPU-Schedulers/"> Try it here </a>
 
-<img src="screenshot.png" width="850">
+<img src="screenshot1.png" width="850">
 
 •	First-Come, First-Served Scheduling- The processor services the processes in the sequence they arrive in the ready queue.
 
